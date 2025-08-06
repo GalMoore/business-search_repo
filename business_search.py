@@ -77,8 +77,8 @@ for term in search_terms:
                     if parsed.netloc:
                         seen_domains.add(parsed.netloc)
 
-    for i in range(2):  # Adjust the number of search iterations if needed
-        print(f"  ▶ Run {i + 1}/2")
+    for i in range(10):  # Adjust the number of search iterations if needed
+        print(f"  ▶ Run {i + 1}/10")
 
         # Perform the Tavily search
         search_response = tavily.search(
