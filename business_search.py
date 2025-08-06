@@ -47,3 +47,5 @@ with open("results.csv", mode="a", newline="", encoding="utf-8") as csv_file:
         email = extract_email(raw_content)
         writer.writerow([url, email if email else "No email found"])
         print(f"{url}, {email if email else 'No email found'}")
+
+print(f"Number of excluded domains: {len(exclude_domains)}")
