@@ -26,6 +26,7 @@ if os.path.exists("results.csv"):
                 if parsed.netloc:
                     exclude_domains.add(parsed.netloc)
 
+print(exclude_domains)
 # Perform the search
 search_response = tavily.search(
     "breast cancer new york city contact email",
