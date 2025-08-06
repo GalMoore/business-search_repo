@@ -9,18 +9,40 @@ import time
 api_key = os.getenv("TAVILY_API_KEY")
 tavily = TavilyClient(api_key)
 
-# Base breast cancer stakeholder search terms (NYC-focused)
+# Folder for CSV files
+output_folder = "breast_cancer_stakeholders"
+os.makedirs(output_folder, exist_ok=True)
+
+# Expanded breast cancer stakeholder search terms (NYC-focused)
 base_terms = [
+    # Medical & clinical
     "breast cancer clinics New York City",
     "oncology nurses breast cancer NYC",
+    "oncology departments hospitals NYC",
+    "plastic surgeons breast reconstruction NYC",
+    "oncologists breast cancer NYC",
+    
+    # Products
     "wig shops for cancer patients NYC",
     "prosthetic breast shops NYC",
+    "mastectomy bra shops NYC",
+    "compression garments for breast cancer NYC",
+    "scar care products after mastectomy NYC",
+    
+    # Support & wellness
     "breast cancer support groups NYC",
+    "breast cancer survivor community NYC",
+    "mental health therapists cancer NYC",
+    "nutritionists for cancer patients NYC",
+    "yoga for breast cancer survivors NYC",
+    "massage therapy for cancer patients NYC",
+    "rehabilitation services breast cancer NYC",
+    
+    # Non-profits & charities
     "breast cancer non-profits NYC",
     "breast cancer charities NYC",
-    "mastectomy bra shops NYC",
-    "cancer survivor community NYC",
-    "breast cancer rehabilitation NYC"
+    "free resources for breast cancer patients NYC",
+    "community organizations for breast cancer NYC"
 ]
 
 # Add "contact email" to each term
@@ -41,7 +63,7 @@ def sanitize_filename(term):
 for term in search_terms:
     print(f"\n🔍 Running search for: {term}")
 
-    filename = f"{sanitize_filename(term)}.csv"
+    filename = os.path.join(output_folder, f"{sanitize_filename(term)}.csv")
     seen_domains = set()
 
     # Load existing URLs to avoid duplicates
@@ -55,8 +77,8 @@ for term in search_terms:
                     if parsed.netloc:
                         seen_domains.add(parsed.netloc)
 
-    for i in range(2):  # Run search 10 times
-        print(f"  ▶ Run {i + 1}/10")
+    for i in range(2):  # Adjust the number of search iterations if needed
+        print(f"  ▶ Run {i + 1}/2")
 
         # Perform the Tavily search
         search_response = tavily.search(
@@ -85,6 +107,7 @@ for term in search_terms:
                 writer.writerow([url, email if email else "No email found"])
                 print(f"    ✔ {url}, {email if email else 'No email found'}")
 
-        #time.sleep(2)  # Optional: Rate limiting if needed
+        # Optional delay to avoid rate limiting
+        # time.sleep(2)
 
 print("\n✅ All search terms completed.")
