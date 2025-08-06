@@ -30,7 +30,7 @@ print(exclude_domains)
 # Perform the search
 search_response = tavily.search(
     "breast cancer new york city contact email",
-    max_results=3,
+    max_results=20,
     include_raw_content=True,
     exclude_domains=list(exclude_domains)
 )
