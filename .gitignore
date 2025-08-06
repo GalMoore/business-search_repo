@@ -1,0 +1,16 @@
+# Ignore common system config files
+.bashrc
+.bash_logout
+.profile
+.gitconfig
+.ssh/
+
+# Ignore Python bytecode files (if you're using Python)
+__pycache__/
+*.pyc
+
+# Ignore environment files
+.env
+
+# Ignore log files
+*.log
