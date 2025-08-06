@@ -35,12 +35,16 @@ for file_name in os.listdir(input_folder):
                     continue  # Skip duplicate emails
 
                 seen_emails.add(email_lower)
-                cleaned_rows.append({"URL": url, "Email": email})
+                cleaned_rows.append({
+                    "URL": url,
+                    "Email": email,
+                    "SourceFile": file_name  # Add source file name
+                })
 
 # Write the final merged and cleaned CSV
 with open(output_file, mode="w", newline="", encoding="utf-8") as outfile:
-    writer = csv.DictWriter(outfile, fieldnames=["URL", "Email"])
+    writer = csv.DictWriter(outfile, fieldnames=["URL", "Email", "SourceFile"])
     writer.writeheader()
     writer.writerows(cleaned_rows)
 
-print(f"✅ Cleaned CSV saved to: {output_file} ({len(cleaned_rows)} unique emails)")
+print(f"✅ Cleaned CSV with source info saved to: {output_file} ({len(cleaned_rows)} unique emails)")
