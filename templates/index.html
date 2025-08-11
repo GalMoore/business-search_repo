@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Search Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .search-form {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .search-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .search-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .status.running {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            display: block;
+        }
+        
+        .status.completed {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            display: block;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            display: block;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            transition: transform 0.2s ease;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .examples {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .examples h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .example-item {
+            background: white;
+            padding: 10px 15px;
+            margin: 8px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border: 1px solid #e1e8ed;
+        }
+        
+        .example-item:hover {
+            background: #e3f2fd;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Business Search Tool</h1>
+            <p>Find contact information for businesses worldwide</p>
+        </div>
+        
+        <div class="content">
+            <form class="search-form" id="searchForm">
+                <div class="form-group">
+                    <label for="searchTerm">Search Term</label>
+                    <input type="text" id="searchTerm" name="searchTerm" 
+                           placeholder="e.g., law firms Israel, restaurants Ra'anana, tech companies Tel Aviv" 
+                           required>
+                </div>
+                <button type="submit" class="search-btn" id="searchBtn">
+                    Start Search
+                </button>
+            </form>
+            
+            <div class="status" id="status"></div>
+            
+            <div class="examples">
+                <h3>Example Searches</h3>
+                <div class="example-item" onclick="fillSearch('law firms Israel contact email')">
+                    🏛️ Law firms Israel contact email
+                </div>
+                <div class="example-item" onclick="fillSearch('restaurants Ra\'anana Israel')">
+                    🍽️ Restaurants Ra'anana Israel
+                </div>
+                <div class="example-item" onclick="fillSearch('tech companies Tel Aviv contact')">
+                    💻 Tech companies Tel Aviv contact
+                </div>
+                <div class="example-item" onclick="fillSearch('medical clinics Jerusalem phone email')">
+                    🏥 Medical clinics Jerusalem phone email
+                </div>
+                <div class="example-item" onclick="fillSearch('accounting firms Boston contact information')">
+                    📊 Accounting firms Boston contact information
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSearchId = null;
+        let statusCheckInterval = null;
+
+        function fillSearch(term) {
+            document.getElementById('searchTerm').value = term;
+        }
+
+        function updateStatus(message, type = 'running') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${type}`;
+            statusDiv.innerHTML = message;
+        }
+
+        function checkStatus(searchId) {
+            fetch(`/status/${searchId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'running') {
+                        let currentRun = data.current_run ? `<br><strong>${data.current_run}</strong>` : '';
+                        let debugInfo = '';
+                        if (data.debug_log && data.debug_log.length > 0) {
+                            debugInfo = `<br><small><strong>Debug:</strong><br>${data.debug_log.slice(-5).join('<br>')}</small>`;
+                        }
+                        updateStatus(`
+                            <div class="spinner"></div>
+                            <strong>Searching...</strong><br>
+                            Looking for: ${data.search_term}${currentRun}<br>
+                            <small>This may take a few minutes as we search up to 200 websites</small>
+                            ${debugInfo}
+                        `, 'running');
+                    } else if (data.status === 'completed') {
+                        clearInterval(statusCheckInterval);
+                        const resultCount = data.result_count || 0;
+                        let debugInfo = '';
+                        if (data.debug_log && data.debug_log.length > 0) {
+                            debugInfo = `<br><small><strong>Debug Log:</strong><br>${data.debug_log.join('<br>')}</small>`;
+                        }
+                        let errorInfo = '';
+                        if (data.error) {
+                            errorInfo = `<br><small><strong>Errors:</strong><br>${data.error}</small>`;
+                        }
+                        updateStatus(`
+                            <strong>✅ Search Completed!</strong><br>
+                            Found ${resultCount} unique contacts for: ${data.search_term}<br>
+                            Return Code: ${data.return_code}<br>
+                            <a href="/download/${searchId}" class="download-btn">📥 Download CSV</a>
+                            ${debugInfo}
+                            ${errorInfo}
+                        `, 'completed');
+                        
+                        // Re-enable search button
+                        document.getElementById('searchBtn').disabled = false;
+                        document.getElementById('searchBtn').textContent = 'Start Search';
+                    } else if (data.status === 'error') {
+                        clearInterval(statusCheckInterval);
+                        updateStatus(`
+                            <strong>❌ Search Failed</strong><br>
+                            Error: ${data.error}<br>
+                            Please try again with a different search term.
+                        `, 'error');
+                        
+                        // Re-enable search button
+                        document.getElementById('searchBtn').disabled = false;
+                        document.getElementById('searchBtn').textContent = 'Start Search';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking status:', error);
+                });
+        }
+
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const searchTerm = document.getElementById('searchTerm').value.trim();
+            if (!searchTerm) return;
+            
+            // Disable search button
+            const searchBtn = document.getElementById('searchBtn');
+            searchBtn.disabled = true;
+            searchBtn.textContent = 'Searching...';
+            
+            // Start search
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({search_term: searchTerm})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    updateStatus(`❌ Error: ${data.error}`, 'error');
+                    searchBtn.disabled = false;
+                    searchBtn.textContent = 'Start Search';
+                } else {
+                    currentSearchId = data.search_id;
+                    updateStatus(`
+                        <div class="spinner"></div>
+                        <strong>Starting search...</strong><br>
+                        Search ID: ${data.search_id}
+                    `, 'running');
+                    
+                    // Start checking status every 3 seconds
+                    statusCheckInterval = setInterval(() => {
+                        checkStatus(currentSearchId);
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                console.error('Error starting search:', error);
+                updateStatus('❌ Failed to start search. Please try again.', 'error');
+                searchBtn.disabled = false;
+                searchBtn.textContent = 'Start Search';
+            });
+        });
+    </script>
+</body>
+</html>

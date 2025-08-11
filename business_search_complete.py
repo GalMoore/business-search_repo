@@ -129,7 +129,8 @@ def merge_and_clean_results(input_folder, output_folder):
 
                     # Validate email and phone
                     valid_email = email and email_regex.match(email)
-                    valid_phone = phone and phone_regex.match(phone.replace(" ", "").replace("-", ""))
+                    # More flexible phone validation - just check if it has enough digits
+                    valid_phone = phone and len(re.sub(r'[^\d]', '', phone)) >= 6
 
                     # Skip if neither email nor phone is valid
                     if not valid_email and not valid_phone:
