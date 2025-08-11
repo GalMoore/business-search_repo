@@ -57,7 +57,7 @@ def search_businesses(search_term, output_folder):
                         seen_domains.add(parsed.netloc)
 
     for i in range(10):  # Adjust the number of search iterations if needed
-        print(f"  ▶ Run {i + 1}/10")
+        print(f"  ▶ Run {i + 1}/10", flush=True)
 
         # Perform the Tavily search
         search_response = tavily.search(
@@ -129,8 +129,7 @@ def merge_and_clean_results(input_folder, output_folder):
 
                     # Validate email and phone
                     valid_email = email and email_regex.match(email)
-                    # More flexible phone validation - just check if it has enough digits
-                    valid_phone = phone and len(re.sub(r'[^\d]', '', phone)) >= 6
+                    valid_phone = phone and phone_regex.match(phone.replace(" ", "").replace("-", ""))
 
                     # Skip if neither email nor phone is valid
                     if not valid_email and not valid_phone:

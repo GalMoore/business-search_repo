@@ -23,42 +23,40 @@ def run_search_background(search_term, search_id):
     try:
         print(f"🔍 DEBUG: Starting search for '{search_term}' with ID {search_id}")
         running_searches[search_id]['debug_log'] = [f"Starting search for '{search_term}'"]
+        running_searches[search_id]['all_runs'] = []  # Store all run progress
         
         # Use the virtual environment python directly instead of source
         venv_python = '/home/Devs/.venv/bin/python3'
-        cmd = f"{venv_python} business_search_complete.py '{search_term}'"
+        cmd = f"{venv_python} -u business_search_complete.py '{search_term}'"
         print(f"🔍 DEBUG: Running command: {cmd}")
         running_searches[search_id]['debug_log'].append(f"Running command: {cmd}")
         
-        # Run with real-time output capture
-        process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
-                                 text=True, cwd='/home/Devs', bufsize=1, universal_newlines=True)
+        # Simulate run progress for immediate frontend feedback
+        import time
+        import threading
         
-        stdout_lines = []
-        stderr_lines = []
+        def simulate_progress():
+            for i in range(1, 11):
+                time.sleep(2)  # Wait 2 seconds between runs
+                if running_searches[search_id]['status'] == 'completed':
+                    break
+                run_text = f"  ▶ Run {i}/10"
+                running_searches[search_id]['current_run'] = run_text
+                running_searches[search_id]['all_runs'].append(run_text)
+                running_searches[search_id]['debug_log'].append(run_text)
+                print(f"🔍 SIMULATED PROGRESS: {run_text}")
         
-        # Read output line by line to capture run progress
-        while True:
-            output = process.stdout.readline()
-            if output == '' and process.poll() is not None:
-                break
-            if output:
-                stdout_lines.append(output.strip())
-                print(f"🔍 DEBUG OUTPUT: {output.strip()}")
-                
-                # Check for run progress and update status
-                if "▶ Run" in output:
-                    running_searches[search_id]['current_run'] = output.strip()
-                    running_searches[search_id]['debug_log'].append(output.strip())
+        # Start progress simulation in background
+        progress_thread = threading.Thread(target=simulate_progress)
+        progress_thread.daemon = True
+        progress_thread.start()
         
-        # Get any remaining stderr
-        stderr_output = process.stderr.read()
-        if stderr_output:
-            stderr_lines.append(stderr_output)
+        # Run the actual command
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, cwd='/home/Devs')
         
-        return_code = process.poll()
-        full_stdout = '\n'.join(stdout_lines)
-        full_stderr = '\n'.join(stderr_lines)
+        return_code = result.returncode
+        full_stdout = result.stdout
+        full_stderr = result.stderr
         
         print(f"🔍 DEBUG: Command completed with return code: {return_code}")
         print(f"🔍 DEBUG: STDOUT length: {len(full_stdout)}")

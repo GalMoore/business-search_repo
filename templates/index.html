@@ -13,9 +13,11 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background: #ffffff;
+            margin: 0;
             padding: 20px;
+            min-height: 100vh;
+            color: #333;
         }
         
         .container {
@@ -254,14 +256,18 @@
                 .then(data => {
                     if (data.status === 'running') {
                         let currentRun = data.current_run ? `<br><strong>${data.current_run}</strong>` : '';
+                        let allRuns = '';
+                        if (data.all_runs && data.all_runs.length > 0) {
+                            allRuns = `<br><small><strong>Progress:</strong> ${data.all_runs.join(' → ')}</small>`;
+                        }
                         let debugInfo = '';
                         if (data.debug_log && data.debug_log.length > 0) {
-                            debugInfo = `<br><small><strong>Debug:</strong><br>${data.debug_log.slice(-5).join('<br>')}</small>`;
+                            debugInfo = `<br><small><strong>Debug:</strong><br>${data.debug_log.slice(-3).join('<br>')}</small>`;
                         }
                         updateStatus(`
                             <div class="spinner"></div>
                             <strong>Searching...</strong><br>
-                            Looking for: ${data.search_term}${currentRun}<br>
+                            Looking for: ${data.search_term}${currentRun}${allRuns}<br>
                             <small>This may take a few minutes as we search up to 200 websites</small>
                             ${debugInfo}
                         `, 'running');
