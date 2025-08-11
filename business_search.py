@@ -4,6 +4,7 @@ import re
 import csv
 from urllib.parse import urlparse
 import time
+import argparse
 
 # Init Tavily
 api_key = os.getenv("TAVILY_API_KEY")
@@ -13,13 +14,14 @@ tavily = TavilyClient(api_key)
 output_folder = "breast_cancer_stakeholders"
 os.makedirs(output_folder, exist_ok=True)
 
-# Breast cancer stakeholder search term (NYC-focused)
-base_terms = [
-    "breast cancer clinics New York City"
-]
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Search for business stakeholder contact information')
+parser.add_argument('search_term', help='The search term to look for (e.g., "breast cancer clinics New York City")')
+args = parser.parse_args()
 
-# Add "contact email" to each term
-search_terms = [term + " contact email" for term in base_terms]
+# Use the provided search term
+search_term = args.search_term
+search_terms = [search_term]
 
 # Extract first email found in a string
 def extract_email(text):

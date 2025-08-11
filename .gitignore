@@ -14,3 +14,9 @@ __pycache__/
 
 # Ignore log files
 *.log
+
+# Ignore system and cache files
+.bash_history
+.cache/
+.codeium/
+.windsurf-server/
