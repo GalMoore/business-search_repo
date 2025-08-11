@@ -11,12 +11,12 @@ api_key = os.getenv("TAVILY_API_KEY")
 tavily = TavilyClient(api_key)
 
 # Folder for CSV files
-output_folder = "breast_cancer_stakeholders"
+output_folder = "business_search_results"
 os.makedirs(output_folder, exist_ok=True)
 
 # Parse command line arguments
-parser = argparse.ArgumentParser(description='Search for business stakeholder contact information')
-parser.add_argument('search_term', help='The search term to look for (e.g., "breast cancer clinics New York City")')
+parser = argparse.ArgumentParser(description='Search for business contact information')
+parser.add_argument('search_term', help='The search term to look for (e.g., "restaurants New York City", "law firms Boston")')
 args = parser.parse_args()
 
 # Use the provided search term

@@ -3,12 +3,12 @@ import csv
 import re
 
 # Input and output folders
-input_folder = "breast_cancer_stakeholders"
-output_folder = "breast_cancer_stakeholders_final"
+input_folder = "business_search_results"
+output_folder = "business_search_results_final"
 os.makedirs(output_folder, exist_ok=True)
 
 # Output file path
-output_file = os.path.join(output_folder, "merged_cleaned_stakeholders.csv")
+output_file = os.path.join(output_folder, "merged_cleaned_results.csv")
 
 # Email validation regex
 email_regex = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
