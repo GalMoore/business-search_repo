@@ -13,36 +13,9 @@ tavily = TavilyClient(api_key)
 output_folder = "breast_cancer_stakeholders"
 os.makedirs(output_folder, exist_ok=True)
 
-# Expanded breast cancer stakeholder search terms (NYC-focused)
+# Breast cancer stakeholder search term (NYC-focused)
 base_terms = [
-    # Medical & clinical
-    "breast cancer clinics New York City",
-    "oncology nurses breast cancer NYC",
-    "oncology departments hospitals NYC",
-    "plastic surgeons breast reconstruction NYC",
-    "oncologists breast cancer NYC",
-    
-    # Products
-    "wig shops for cancer patients NYC",
-    "prosthetic breast shops NYC",
-    "mastectomy bra shops NYC",
-    "compression garments for breast cancer NYC",
-    "scar care products after mastectomy NYC",
-    
-    # Support & wellness
-    "breast cancer support groups NYC",
-    "breast cancer survivor community NYC",
-    "mental health therapists cancer NYC",
-    "nutritionists for cancer patients NYC",
-    "yoga for breast cancer survivors NYC",
-    "massage therapy for cancer patients NYC",
-    "rehabilitation services breast cancer NYC",
-    
-    # Non-profits & charities
-    "breast cancer non-profits NYC",
-    "breast cancer charities NYC",
-    "free resources for breast cancer patients NYC",
-    "community organizations for breast cancer NYC"
+    "breast cancer clinics New York City"
 ]
 
 # Add "contact email" to each term
