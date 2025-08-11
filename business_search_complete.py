@@ -13,6 +13,25 @@ def extract_email(text):
     match = re.search(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", text)
     return match.group(0) if match else None
 
+def extract_phone(text):
+    """Extract first phone number found in a string"""
+    if not text:
+        return None
+    # Match various phone formats including international
+    patterns = [
+        r"\+972[\s-]?\d[\s-]?\d{3}[\s-]?\d{4}",  # Israeli format +972-X-XXX-XXXX
+        r"0\d[\s-]?\d{3}[\s-]?\d{4}",  # Israeli local format 0X-XXX-XXXX
+        r"\(\d{3}\)[\s-]?\d{3}[\s-]?\d{4}",  # (XXX) XXX-XXXX
+        r"\d{3}[\s-]?\d{3}[\s-]?\d{4}",  # XXX-XXX-XXXX
+        r"\+\d{1,3}[\s-]?\d{1,4}[\s-]?\d{3,4}[\s-]?\d{4}"  # International format
+    ]
+    
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            return match.group(0)
+    return None
+
 def sanitize_filename(term):
     """Clean a filename from a search term"""
     return re.sub(r'[^\w\s-]', '', term).replace(' ', '_').lower()
@@ -50,20 +69,21 @@ def search_businesses(search_term, output_folder):
         with open(filename, mode="a", newline="", encoding="utf-8") as csv_file:
             writer = csv.writer(csv_file)
             if csv_file.tell() == 0:
-                writer.writerow(["URL", "Email"])  # Header
+                writer.writerow(["URL", "Email", "Phone"])  # Header
 
             for result in search_response.get("results", []):
                 url = result.get("url")
                 raw_content = result.get("raw_content")
                 email = extract_email(raw_content)
+                phone = extract_phone(raw_content)
 
                 if url:
                     parsed = urlparse(url)
                     if parsed.netloc:
                         seen_domains.add(parsed.netloc)
 
-                writer.writerow([url, email if email else "No email found"])
-                print(f"    ✔ {url}, {email if email else 'No email found'}")
+                writer.writerow([url, email if email else "No email found", phone if phone else "No phone found"])
+                print(f"    ✔ {url}, {email if email else 'No email found'}, {phone if phone else 'No phone found'}")
 
         # Optional delay to avoid rate limiting
         # time.sleep(2)
@@ -93,6 +113,7 @@ def merge_and_clean_results(input_folder, output_folder):
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     email = row.get("Email", "").strip()
+                    phone = row.get("Phone", "").strip()
                     url = row.get("URL", "").strip()
 
                     if not email or not email_regex.match(email):
@@ -106,12 +127,13 @@ def merge_and_clean_results(input_folder, output_folder):
                     cleaned_rows.append({
                         "URL": url,
                         "Email": email,
+                        "Phone": phone if phone != "No phone found" else "",
                         "SourceFile": file_name  # Add source file name
                     })
 
     # Write the final merged and cleaned CSV
     with open(output_file, mode="w", newline="", encoding="utf-8") as outfile:
-        writer = csv.DictWriter(outfile, fieldnames=["URL", "Email", "SourceFile"])
+        writer = csv.DictWriter(outfile, fieldnames=["URL", "Email", "Phone", "SourceFile"])
         writer.writeheader()
         writer.writerows(cleaned_rows)
 
@@ -137,8 +159,8 @@ def main():
 
     # Setup unique folders based on search term
     sanitized_term = sanitize_filename(args.search_term)
-    search_results_folder = f"business_search_results_{sanitized_term}"
-    final_results_folder = f"business_search_results_final_{sanitized_term}"
+    search_results_folder = f"search_{sanitized_term}"
+    final_results_folder = f"final_{sanitized_term}"
     os.makedirs(search_results_folder, exist_ok=True)
 
     # Step 1: Search for businesses
