@@ -23,6 +23,3 @@ __pycache__/
 
 # Ignore virtual environment
 .venv/
-
-# Ignore search results data
-business_searches/
