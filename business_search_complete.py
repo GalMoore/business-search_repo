@@ -5,6 +5,8 @@ import csv
 from urllib.parse import urlparse
 import time
 import argparse
+from datetime import datetime
+import pytz
 
 def extract_email(text):
     """Extract first email found in a string"""
@@ -101,8 +103,11 @@ def merge_and_clean_results(input_folder, output_folder):
     # Email validation regex
     email_regex = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
     
-    # Track unique emails
-    seen_emails = set()
+    # Phone validation regex (basic check for digits and common separators)
+    phone_regex = re.compile(r"^[\+]?[\d\s\-\(\)]{7,}$")
+    
+    # Track unique contacts (by email or URL if no email)
+    seen_contacts = set()
     cleaned_rows = []
     
     # Process each CSV file in the input folder
@@ -116,14 +121,26 @@ def merge_and_clean_results(input_folder, output_folder):
                     phone = row.get("Phone", "").strip()
                     url = row.get("URL", "").strip()
 
-                    if not email or not email_regex.match(email):
-                        continue  # Skip rows with invalid or missing email
+                    # Clean up "No X found" entries
+                    if email == "No email found":
+                        email = ""
+                    if phone == "No phone found":
+                        phone = ""
 
-                    email_lower = email.lower()
-                    if email_lower in seen_emails:
-                        continue  # Skip duplicate emails
+                    # Validate email and phone
+                    valid_email = email and email_regex.match(email)
+                    valid_phone = phone and phone_regex.match(phone.replace(" ", "").replace("-", ""))
 
-                    seen_emails.add(email_lower)
+                    # Skip if neither email nor phone is valid
+                    if not valid_email and not valid_phone:
+                        continue
+
+                    # Use email as primary key, URL as fallback for deduplication
+                    contact_key = email.lower() if valid_email else url.lower()
+                    if contact_key in seen_contacts:
+                        continue  # Skip duplicate contacts
+
+                    seen_contacts.add(contact_key)
                     cleaned_rows.append({
                         "URL": url,
                         "Email": email,
@@ -157,10 +174,17 @@ def main():
     global tavily
     tavily = TavilyClient(api_key)
 
-    # Setup unique folders based on search term
+    # Setup unique folders based on search term and timestamp
+    israel_tz = pytz.timezone('Asia/Jerusalem')
+    timestamp = datetime.now(israel_tz).strftime('%Y%m%d_%H%M%S')
     sanitized_term = sanitize_filename(args.search_term)
-    search_results_folder = f"search_{sanitized_term}"
-    final_results_folder = f"final_{sanitized_term}"
+    
+    # Create parent folder for all searches
+    parent_folder = "business_searches"
+    os.makedirs(parent_folder, exist_ok=True)
+    
+    search_results_folder = os.path.join(parent_folder, f"search_{sanitized_term}_{timestamp}")
+    final_results_folder = os.path.join(parent_folder, f"final_{sanitized_term}_{timestamp}")
     os.makedirs(search_results_folder, exist_ok=True)
 
     # Step 1: Search for businesses
