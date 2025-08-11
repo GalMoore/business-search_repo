@@ -179,12 +179,13 @@ def main():
     timestamp = datetime.now(israel_tz).strftime('%Y%m%d_%H%M%S')
     sanitized_term = sanitize_filename(args.search_term)
     
-    # Create parent folder for all searches
+    # Create nested folder structure
     parent_folder = "business_searches"
-    os.makedirs(parent_folder, exist_ok=True)
+    run_folder = os.path.join(parent_folder, f"{sanitized_term}_{timestamp}")
+    os.makedirs(run_folder, exist_ok=True)
     
-    search_results_folder = os.path.join(parent_folder, f"search_{sanitized_term}_{timestamp}")
-    final_results_folder = os.path.join(parent_folder, f"final_{sanitized_term}_{timestamp}")
+    search_results_folder = os.path.join(run_folder, "search")
+    final_results_folder = os.path.join(run_folder, "final")
     os.makedirs(search_results_folder, exist_ok=True)
 
     # Step 1: Search for businesses
