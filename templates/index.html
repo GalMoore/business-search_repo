@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Search Tool</title>
+    <title>ZugSieg</title>
     <style>
         * {
             margin: 0;
@@ -12,43 +12,48 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
             background: #ffffff;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             min-height: 100vh;
-            color: #333;
+            color: #1d1d1f;
+            line-height: 1.4;
         }
         
         .container {
-            max-width: 800px;
+            max-width: 980px;
             margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
+            min-height: 100vh;
         }
         
         .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
-            padding: 40px;
+            background: #ffffff;
+            color: #1d1d1f;
+            padding: 80px 40px 60px 40px;
             text-align: center;
+            border-bottom: 1px solid #f5f5f7;
         }
         
         .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            font-weight: 300;
+            font-size: 56px;
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: -0.005em;
         }
         
         .header p {
-            opacity: 0.9;
-            font-size: 1.1em;
+            font-size: 21px;
+            margin: 16px 0 0 0;
+            color: #86868b;
+            font-weight: 400;
         }
         
         .content {
-            padding: 40px;
+            padding: 60px 40px;
+            max-width: 692px;
+            margin: 0 auto;
         }
         
         .search-form {
@@ -56,135 +61,127 @@
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 40px;
         }
         
-        label {
+        .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             font-weight: 600;
-            color: #2c3e50;
+            color: #1d1d1f;
+            font-size: 17px;
+            letter-spacing: -0.022em;
         }
         
-        input[type="text"] {
+        .form-group input {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e8ed;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
+            padding: 16px 20px;
+            border: 1px solid #d2d2d7;
+            border-radius: 12px;
+            font-size: 17px;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            background: #ffffff;
+            color: #1d1d1f;
         }
         
-        input[type="text"]:focus {
+        .form-group input:focus {
             outline: none;
-            border-color: #3498db;
+            border-color: #000000;
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1);
         }
         
         .search-btn {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
+            background: #000000;
+            color: #ffffff;
             border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
+            padding: 16px 32px;
+            border-radius: 980px;
+            font-size: 17px;
+            font-weight: 400;
             cursor: pointer;
-            transition: transform 0.2s ease;
-            width: 100%;
+            transition: all 0.2s ease;
+            width: auto;
+            min-width: 200px;
+            letter-spacing: -0.022em;
         }
         
         .search-btn:hover {
-            transform: translateY(-2px);
+            background: #424245;
+        }
+        
+        .search-btn:active {
+            background: #1d1d1f;
         }
         
         .search-btn:disabled {
-            background: #bdc3c7;
+            background: #d2d2d7;
+            color: #86868b;
             cursor: not-allowed;
-            transform: none;
         }
         
         .status {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 10px;
+            margin-top: 40px;
+            padding: 24px;
+            border-radius: 16px;
             display: none;
+            font-size: 17px;
+            line-height: 1.47;
         }
         
         .status.running {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
+            background: #f5f5f7;
+            border: 1px solid #d2d2d7;
+            color: #1d1d1f;
             display: block;
         }
         
         .status.completed {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
+            background: #f5f5f7;
+            border: 1px solid #d2d2d7;
+            color: #1d1d1f;
             display: block;
         }
         
         .status.error {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
+            background: #f5f5f7;
+            border: 1px solid #d2d2d7;
+            color: #1d1d1f;
             display: block;
         }
         
         .download-btn {
-            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-            color: white;
+            background: #000000;
+            color: #ffffff;
             border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 980px;
+            font-size: 15px;
+            font-weight: 400;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
-            margin-top: 10px;
-            transition: transform 0.2s ease;
+            margin-top: 20px;
+            transition: all 0.2s ease;
+            letter-spacing: -0.022em;
         }
         
         .download-btn:hover {
-            transform: translateY(-1px);
+            background: #424245;
         }
         
-        .examples {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-        
-        .examples h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-        
-        .example-item {
-            background: white;
-            padding: 10px 15px;
-            margin: 8px 0;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-            border: 1px solid #e1e8ed;
-        }
-        
-        .example-item:hover {
-            background: #e3f2fd;
-        }
+
         
         .spinner {
             display: inline-block;
             width: 20px;
             height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
+            border: 2px solid #d2d2d7;
+            border-top: 2px solid #1d1d1f;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-right: 10px;
+            display: inline-block;
+            margin-right: 12px;
         }
         
         @keyframes spin {
@@ -196,17 +193,28 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔍 Business Search Tool</h1>
-            <p>Find contact information for businesses worldwide</p>
+            <h1>ZugSieg</h1>
+            <p>Find business email contacts</p>
         </div>
         
         <div class="content">
             <form class="search-form" id="searchForm">
                 <div class="form-group">
-                    <label for="searchTerm">Search Term</label>
+                    <label for="searchTerm">Search Terms (comma-separated)</label>
                     <input type="text" id="searchTerm" name="searchTerm" 
-                           placeholder="e.g., law firms Israel, restaurants Ra'anana, tech companies Tel Aviv" 
+                           placeholder="e.g., breast cancer support groups contact email, breast cancer charities contact email" 
                            required>
+                </div>
+                <div class="form-group">
+                    <label for="locations">Locations (comma-separated)</label>
+                    <input type="text" id="locations" name="locations" 
+                           placeholder="e.g., New York, Boston, Washington" 
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="iterations">Number of Search Iterations (per location)</label>
+                    <input type="number" id="iterations" name="iterations" 
+                           placeholder="10" min="1" max="50" value="10" required>
                 </div>
                 <button type="submit" class="search-btn" id="searchBtn">
                     Start Search
@@ -215,24 +223,7 @@
             
             <div class="status" id="status"></div>
             
-            <div class="examples">
-                <h3>Example Searches</h3>
-                <div class="example-item" onclick="fillSearch('law firms Israel contact email')">
-                    🏛️ Law firms Israel contact email
-                </div>
-                <div class="example-item" onclick="fillSearch('restaurants Ra\'anana Israel')">
-                    🍽️ Restaurants Ra'anana Israel
-                </div>
-                <div class="example-item" onclick="fillSearch('tech companies Tel Aviv contact')">
-                    💻 Tech companies Tel Aviv contact
-                </div>
-                <div class="example-item" onclick="fillSearch('medical clinics Jerusalem phone email')">
-                    🏥 Medical clinics Jerusalem phone email
-                </div>
-                <div class="example-item" onclick="fillSearch('accounting firms Boston contact information')">
-                    📊 Accounting firms Boston contact information
-                </div>
-            </div>
+
         </div>
     </div>
 
@@ -240,9 +231,7 @@
         let currentSearchId = null;
         let statusCheckInterval = null;
 
-        function fillSearch(term) {
-            document.getElementById('searchTerm').value = term;
-        }
+
 
         function updateStatus(message, type = 'running') {
             const statusDiv = document.getElementById('status');
@@ -255,6 +244,14 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'running') {
+                        let searchProgress = '';
+                        if (data.total_searches && data.completed_searches !== undefined) {
+                            searchProgress = `<br><strong>Search Progress:</strong> ${data.completed_searches + 1}/${data.total_searches}`;
+                            if (data.current_search_term && data.current_location) {
+                                searchProgress += `<br><strong>Current:</strong> "${data.current_search_term}" in ${data.current_location}`;
+                            }
+                        }
+                        
                         let currentRun = data.current_run ? `<br><strong>${data.current_run}</strong>` : '';
                         let allRuns = '';
                         if (data.all_runs && data.all_runs.length > 0) {
@@ -264,11 +261,31 @@
                         if (data.debug_log && data.debug_log.length > 0) {
                             debugInfo = `<br><small><strong>Debug:</strong><br>${data.debug_log.slice(-3).join('<br>')}</small>`;
                         }
+                        
+                        let timingInfo = '';
+                        if (data.started_at) {
+                            const startTime = new Date(data.started_at);
+                            const currentTime = new Date();
+                            const elapsedSeconds = Math.floor((currentTime - startTime) / 1000);
+                            const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+                            const remainingSeconds = elapsedSeconds % 60;
+                            const elapsedText = elapsedMinutes > 0 ? `${elapsedMinutes}m ${remainingSeconds}s` : `${elapsedSeconds}s`;
+                            const israeliTime = startTime.toLocaleTimeString('en-US', {timeZone: 'Asia/Jerusalem'});
+                            timingInfo = `<br><small><strong>Started:</strong> ${israeliTime} (IST) | <strong>Elapsed:</strong> ${elapsedText}</small>`;
+                        }
+                        
+                        const searchTermsText = data.search_terms ? data.search_terms.join(', ') : 'Multiple terms';
+                        const locationsText = data.locations ? data.locations.join(', ') : 'Multiple locations';
+                        const totalIterations = data.total_searches ? data.iterations * data.total_searches : data.iterations;
+                        
                         updateStatus(`
                             <div class="spinner"></div>
-                            <strong>Searching...</strong><br>
-                            Looking for: ${data.search_term}${currentRun}${allRuns}<br>
-                            <small>This may take a few minutes as we search up to 200 websites</small>
+                            <strong>Multi-Term Multi-Location Search Running...</strong><br>
+                            <strong>Terms:</strong> ${searchTermsText}<br>
+                            <strong>Locations:</strong> ${locationsText}${searchProgress}${currentRun}${allRuns}<br>
+                            <small>Running ${data.iterations} iterations per search (${totalIterations} total iterations)</small>
+                            ${timingInfo}
+                            <br><button onclick="cancelSearch('${searchId}')" class="cancel-btn" style="background-color: #dc3545; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;">🛑 Cancel Search</button>
                             ${debugInfo}
                         `, 'running');
                     } else if (data.status === 'completed') {
@@ -282,11 +299,27 @@
                         if (data.error) {
                             errorInfo = `<br><small><strong>Errors:</strong><br>${data.error}</small>`;
                         }
+                        
+                        let timingInfo = '';
+                        if (data.started_at && data.completed_at) {
+                            const startTime = new Date(data.started_at);
+                            const endTime = new Date(data.completed_at);
+                            const totalSeconds = Math.floor((endTime - startTime) / 1000);
+                            const totalMinutes = Math.floor(totalSeconds / 60);
+                            const remainingSeconds = totalSeconds % 60;
+                            const durationText = totalMinutes > 0 ? `${totalMinutes}m ${remainingSeconds}s` : `${totalSeconds}s`;
+                            const israeliStartTime = startTime.toLocaleTimeString('en-US', {timeZone: 'Asia/Jerusalem'});
+                            const israeliEndTime = endTime.toLocaleTimeString('en-US', {timeZone: 'Asia/Jerusalem'});
+                            timingInfo = `<br><small><strong>Started:</strong> ${israeliStartTime} (IST) | <strong>Completed:</strong> ${israeliEndTime} (IST) | <strong>Duration:</strong> ${durationText}</small>`;
+                        }
+                        
+                        const searchTermsText = data.search_terms ? data.search_terms.join(', ') : (data.search_term || 'search');
                         updateStatus(`
                             <strong>✅ Search Completed!</strong><br>
-                            Found ${resultCount} unique contacts for: ${data.search_term}<br>
+                            Found ${resultCount} unique contacts for: ${searchTermsText}<br>
                             Return Code: ${data.return_code}<br>
                             <a href="/download/${searchId}" class="download-btn">📥 Download CSV</a>
+                            ${timingInfo}
                             ${debugInfo}
                             ${errorInfo}
                         `, 'completed');
@@ -316,7 +349,10 @@
             e.preventDefault();
             
             const searchTerm = document.getElementById('searchTerm').value.trim();
-            if (!searchTerm) return;
+            const locations = document.getElementById('locations').value.trim();
+            const iterations = parseInt(document.getElementById('iterations').value) || 10;
+            
+            if (!searchTerm || !locations) return;
             
             // Disable search button
             const searchBtn = document.getElementById('searchBtn');
@@ -324,12 +360,12 @@
             searchBtn.textContent = 'Searching...';
             
             // Start search
-            fetch('/search', {
+            fetch('/start_search', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({search_term: searchTerm})
+                body: JSON.stringify({search_term: searchTerm, locations: locations, iterations: iterations})
             })
             .then(response => response.json())
             .then(data => {
@@ -358,6 +394,29 @@
                 searchBtn.textContent = 'Start Search';
             });
         });
+
+        function cancelSearch(searchId) {
+            if (confirm('Are you sure you want to cancel this search?')) {
+                fetch(`/cancel/${searchId}`, {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        clearInterval(statusCheckInterval);
+                        updateStatus('🛑 Search cancelled by user.', 'cancelled');
+                        document.getElementById('searchBtn').disabled = false;
+                        document.getElementById('searchBtn').textContent = 'Start Search';
+                    } else {
+                        alert('Failed to cancel search: ' + (data.error || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error cancelling search:', error);
+                    alert('Failed to cancel search');
+                });
+            }
+        }
     </script>
 </body>
 </html>
